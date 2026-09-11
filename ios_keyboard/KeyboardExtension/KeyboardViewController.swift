@@ -147,6 +147,7 @@ final class KeyboardViewController: UIInputViewController {
         clipboardStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         let clipboardButton = makeAccessory(title: "📋", action: #selector(readClipboard))
         clipboardStack.addArrangedSubview(clipboardButton)
+        guard hasFullAccess else { return }
         guard let text = UIPasteboard.general.string, !text.isEmpty else { return }
         let item = makeAccessory(title: text, action: #selector(insertClipboard(_:)))
         item.value = text
