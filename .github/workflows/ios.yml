@@ -1,0 +1,50 @@
+name: iOS build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build-ios:
+    runs-on: macos-14
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Resolve Flutter dependencies
+        run: flutter pub get
+
+      - name: Install CocoaPods dependencies
+        working-directory: .ios
+        run: pod install --repo-update
+
+      - name: Archive iOS app
+        run: |
+          xcodebuild archive \
+            -workspace .ios/Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/Runner.xcarchive" \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Package unsigned IPA artifact
+        run: |
+          rm -rf Payload
+          mkdir Payload
+          cp -R "$RUNNER_TEMP/Runner.xcarchive/Products/Applications/Runner.app" Payload/
+          ditto -c -k --sequesterRsrc --keepParent Payload keyboard-unsigned.ipa
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: keyboard-unsigned-ipa
+          path: keyboard-unsigned.ipa
