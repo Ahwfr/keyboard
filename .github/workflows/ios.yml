@@ -26,7 +26,9 @@ jobs:
 
       - name: Generate native iOS project
         working-directory: ios_keyboard
-        run: xcodegen generate
+        run: |
+          xcodegen generate
+          sed -i '' 's/objectVersion = 77;/objectVersion = 60;/' Keyboard.xcodeproj/project.pbxproj
 
       - name: Archive host app and keyboard extension
         run: |
