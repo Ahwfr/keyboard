@@ -1,0 +1,36 @@
+name: Keyboard
+options:
+  bundleIdPrefix: com.ahwfr
+  deploymentTarget:
+    iOS: "15.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+settings:
+  base:
+    SWIFT_VERSION: 5.0
+    DEVELOPMENT_TEAM: ""
+targets:
+  KeyboardHost:
+    type: application
+    platform: iOS
+    sources:
+      - path: Host
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.ahwfr.keyboard
+        INFOPLIST_FILE: Host/Info.plist
+        TARGETED_DEVICE_FAMILY: "1"
+    dependencies:
+      - target: KeyboardExtension
+        embed: true
+  KeyboardExtension:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: KeyboardExtension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.ahwfr.keyboard.extension
+        INFOPLIST_FILE: KeyboardExtension/Info.plist
+        TARGETED_DEVICE_FAMILY: "1"
+        APPLICATION_EXTENSION_API_ONLY: YES

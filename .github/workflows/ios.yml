@@ -21,22 +21,29 @@ jobs:
       - name: Resolve Flutter dependencies
         run: flutter pub get
 
-      - name: Archive iOS app
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate native iOS project
+        working-directory: ios_keyboard
+        run: xcodegen generate
+
+      - name: Archive host app and keyboard extension
         run: |
           xcodebuild archive \
-            -workspace .ios/Runner.xcworkspace \
-            -scheme Runner \
+            -project ios_keyboard/Keyboard.xcodeproj \
+            -scheme KeyboardHost \
             -configuration Release \
             -sdk iphoneos \
             -destination 'generic/platform=iOS' \
-            -archivePath "$RUNNER_TEMP/Runner.xcarchive" \
+            -archivePath "$RUNNER_TEMP/Keyboard.xcarchive" \
             CODE_SIGNING_ALLOWED=NO
 
       - name: Package unsigned IPA artifact
         run: |
           rm -rf Payload
           mkdir Payload
-          cp -R "$RUNNER_TEMP/Runner.xcarchive/Products/Applications/Runner.app" Payload/
+          cp -R "$RUNNER_TEMP/Keyboard.xcarchive/Products/Applications/KeyboardHost.app" Payload/Keyboard.app
           ditto -c -k --sequesterRsrc --keepParent Payload keyboard-unsigned.ipa
 
       - name: Upload IPA artifact
