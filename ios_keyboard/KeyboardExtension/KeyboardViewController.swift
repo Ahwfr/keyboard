@@ -18,6 +18,12 @@ final class KeyboardViewController: UIInputViewController {
         refreshClipboard()
     }
 
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        deleteTimer?.invalidate()
+        deleteTimer = nil
+    }
+
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         preferredContentSize = CGSize(width: 0, height: 296)
@@ -147,7 +153,12 @@ final class KeyboardViewController: UIInputViewController {
         clipboardStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         let clipboardButton = makeAccessory(title: "📋", action: #selector(readClipboard))
         clipboardStack.addArrangedSubview(clipboardButton)
-        guard hasFullAccess else { return }
+        guard hasFullAccess else {
+            let accessLabel = makeAccessory(title: "Enable Full Access for clipboard", action: #selector(readClipboard))
+            accessLabel.isEnabled = false
+            clipboardStack.addArrangedSubview(accessLabel)
+            return
+        }
         guard let text = UIPasteboard.general.string, !text.isEmpty else { return }
         let item = makeAccessory(title: text, action: #selector(insertClipboard(_:)))
         item.value = text
