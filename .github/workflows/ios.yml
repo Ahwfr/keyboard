@@ -32,6 +32,7 @@ jobs:
 
       - name: Archive host app and keyboard extension
         run: |
+          set -o pipefail
           xcodebuild archive \
             -project ios_keyboard/Keyboard.xcodeproj \
             -scheme KeyboardHost \
@@ -39,7 +40,16 @@ jobs:
             -sdk iphoneos \
             -destination 'generic/platform=iOS' \
             -archivePath "$RUNNER_TEMP/Keyboard.xcarchive" \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO 2>&1 | tee xcodebuild.log
+
+      - name: Upload native build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keyboard-xcodebuild-log
+          path: xcodebuild.log
+          if-no-files-found: ignore
 
       - name: Package unsigned IPA artifact
         run: |
