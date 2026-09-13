@@ -20,9 +20,8 @@ flutter test
 ## Build the iOS project
 
 The native Xcode project is generated from `ios_keyboard/project.yml` with
-XcodeGen. The keyboard uses KeyboardKit 10.9.4 for the native layout,
-gestures, callouts, feedback, and text actions. Run this on macOS with Xcode,
-XcodeGen, and an Apple Developer account configured:
+XcodeGen. Run this on macOS with Xcode, XcodeGen, and an Apple Developer
+account configured:
 
 ```sh
 cd ios_keyboard

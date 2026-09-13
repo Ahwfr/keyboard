@@ -5,10 +5,6 @@ options:
     iOS: "16.0"
   createIntermediateGroups: true
   groupSortPosition: top
-packages:
-  KeyboardKit:
-    url: https://github.com/KeyboardKit/KeyboardKit.git
-    exactVersion: 10.9.4
 settings:
   base:
     SWIFT_VERSION: 5.9
@@ -19,7 +15,6 @@ targets:
     platform: iOS
     sources:
       - path: Host
-      - path: Shared
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.ahwfr.keyboard
@@ -29,15 +24,11 @@ targets:
     dependencies:
       - target: KeyboardExtension
         embed: true
-      - package: KeyboardKit
   KeyboardExtension:
     type: app-extension
     platform: iOS
     sources:
       - path: KeyboardExtension
-      - path: Shared
-    dependencies:
-      - package: KeyboardKit
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.ahwfr.keyboard.extension
