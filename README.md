@@ -35,9 +35,8 @@ xcodebuild -project ios_keyboard/Keyboard.xcodeproj \
 ```
 
 For a signed device archive, select an Apple Developer Team in the generated
-project, register the host and extension bundle identifiers, enable the
-`group.com.ahwfr.keyboard` App Group, then archive the `KeyboardHost` scheme
-for `Any iOS Device` and export the archive from Xcode.
+project, register the host and extension bundle identifiers, then archive the
+`KeyboardHost` scheme for `Any iOS Device` and export the archive from Xcode.
 
 To test the extension, install the host app, enable `Keyboard` under Settings
 > General > Keyboard > Keyboards, then select it from the Globe key in an app

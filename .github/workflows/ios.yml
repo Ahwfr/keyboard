@@ -32,7 +32,7 @@ jobs:
 
       - name: Archive host app and keyboard extension
         run: |
-          set -o pipefail
+          set +e
           xcodebuild archive \
             -project ios_keyboard/Keyboard.xcodeproj \
             -scheme KeyboardHost \
@@ -42,6 +42,15 @@ jobs:
             -archivePath "$RUNNER_TEMP/Keyboard.xcarchive" \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO 2>&1 | tee xcodebuild.log
+          build_status=${PIPESTATUS[0]}
+          if [ "$build_status" -ne 0 ]; then
+            grep -E '(^| )((fatal )?error:|.*\.swift:[0-9]+:[0-9]+:)' xcodebuild.log \
+              | tail -20 \
+              | while IFS= read -r line; do
+                  echo "::error title=Xcode archive failed::$line"
+                done
+            exit "$build_status"
+          fi
 
       - name: Upload native build log
         if: always()
