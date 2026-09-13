@@ -30,6 +30,13 @@ jobs:
           xcodegen generate
           sed -i '' 's/objectVersion = 77;/objectVersion = 60;/' Keyboard.xcodeproj/project.pbxproj
 
+      - name: Resolve Swift packages
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -project ios_keyboard/Keyboard.xcodeproj \
+            -scheme KeyboardHost \
+            -clonedSourcePackagesDirPath "$RUNNER_TEMP/SourcePackages"
+
       - name: Archive host app and keyboard extension
         run: |
           xcodebuild archive \
@@ -39,6 +46,7 @@ jobs:
             -sdk iphoneos \
             -destination 'generic/platform=iOS' \
             -archivePath "$RUNNER_TEMP/Keyboard.xcarchive" \
+            -clonedSourcePackagesDirPath "$RUNNER_TEMP/SourcePackages" \
             CODE_SIGNING_ALLOWED=NO
 
       - name: Package unsigned IPA artifact

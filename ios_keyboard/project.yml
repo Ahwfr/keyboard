@@ -2,12 +2,16 @@ name: Keyboard
 options:
   bundleIdPrefix: com.ahwfr
   deploymentTarget:
-    iOS: "15.0"
+    iOS: "16.0"
   createIntermediateGroups: true
   groupSortPosition: top
+packages:
+  KeyboardKit:
+    url: https://github.com/KeyboardKit/KeyboardKit.git
+    exactVersion: 10.9.4
 settings:
   base:
-    SWIFT_VERSION: 5.0
+    SWIFT_VERSION: 5.9
     DEVELOPMENT_TEAM: ""
 targets:
   KeyboardHost:
@@ -15,22 +19,31 @@ targets:
     platform: iOS
     sources:
       - path: Host
+      - path: Shared
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.ahwfr.keyboard
         INFOPLIST_FILE: Host/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Host/Keyboard.entitlements
         TARGETED_DEVICE_FAMILY: "1"
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks"
     dependencies:
       - target: KeyboardExtension
         embed: true
+      - package: KeyboardKit
   KeyboardExtension:
     type: app-extension
     platform: iOS
     sources:
       - path: KeyboardExtension
+      - path: Shared
+    dependencies:
+      - package: KeyboardKit
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.ahwfr.keyboard.extension
         INFOPLIST_FILE: KeyboardExtension/Info.plist
+        CODE_SIGN_ENTITLEMENTS: KeyboardExtension/Keyboard.entitlements
         TARGETED_DEVICE_FAMILY: "1"
         APPLICATION_EXTENSION_API_ONLY: YES
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../../Frameworks"
