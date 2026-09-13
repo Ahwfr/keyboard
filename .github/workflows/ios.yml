@@ -30,6 +30,14 @@ jobs:
           xcodegen generate
           sed -i '' 's/objectVersion = 77;/objectVersion = 60;/' Keyboard.xcodeproj/project.pbxproj
 
+      - name: Stamp build identity
+        run: |
+          for plist in ios_keyboard/Host/Info.plist ios_keyboard/KeyboardExtension/Info.plist; do
+            /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString 1.0.${GITHUB_RUN_NUMBER}" "$plist"
+            /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${GITHUB_RUN_NUMBER}" "$plist"
+            /usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName Keyboard ${GITHUB_RUN_NUMBER}" "$plist"
+          done
+
       - name: Archive host app and keyboard extension
         run: |
           set +e
@@ -65,10 +73,10 @@ jobs:
           rm -rf Payload
           mkdir Payload
           cp -R "$RUNNER_TEMP/Keyboard.xcarchive/Products/Applications/KeyboardHost.app" Payload/Keyboard.app
-          ditto -c -k --sequesterRsrc --keepParent Payload keyboard-unsigned.ipa
+          ditto -c -k --sequesterRsrc --keepParent Payload "keyboard-build-${GITHUB_RUN_NUMBER}-unsigned.ipa"
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
-          name: keyboard-unsigned-ipa
-          path: keyboard-unsigned.ipa
+          name: keyboard-build-${{ github.run_number }}-unsigned-ipa
+          path: keyboard-build-${{ github.run_number }}-unsigned.ipa
