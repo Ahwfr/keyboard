@@ -18,9 +18,7 @@ final class KeyboardViewController: UIInputViewController, UIInputViewAudioFeedb
     private var cursorPanTranslation: CGFloat = 0
     private var accentPopover: AccentPopover?
 
-    private let clipboardStore = ClipboardHistoryStore(
-        suiteName: KeyboardAppConfiguration.appGroupID
-    )
+    private let clipboardStore = ClipboardHistoryStore()
 
     private let numberRow = Array("1234567890").map(String.init)
     private let firstRow = Array("qwertyuiop").map(String.init)
@@ -349,13 +347,12 @@ private let accentVariants: [String: [String]] = [
 ]
 
 private final class ClipboardHistoryStore {
-    private let defaults: UserDefaults?
+    private let defaults = UserDefaults.standard
     private let key = "keyboard.clipboard.history.v1"
     private(set) var clips: [String]
 
-    init(suiteName: String) {
-        defaults = UserDefaults(suiteName: suiteName)
-        clips = defaults?.stringArray(forKey: key) ?? []
+    init() {
+        clips = defaults.stringArray(forKey: key) ?? []
     }
 
     func record(_ clip: String) {
@@ -363,7 +360,7 @@ private final class ClipboardHistoryStore {
         let limited = String(clip.prefix(1_000))
         clips = [limited] + clips.filter { $0 != limited }
         clips = Array(clips.prefix(10))
-        defaults?.set(clips, forKey: key)
+        defaults.set(clips, forKey: key)
     }
 }
 

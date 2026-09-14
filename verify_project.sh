@@ -61,14 +61,11 @@ check_file "Host/AppDelegate.swift"
 check_file "Host/SceneDelegate.swift"
 check_file "Host/SetupViewController.swift"
 check_file "Host/Info.plist"
-check_file "Host/KeyboardHost.entitlements"
 echo
 
 echo "Checking KeyboardExtension target files..."
 check_file "KeyboardExtension/KeyboardViewController.swift"
-check_file "KeyboardExtension/KeyboardAppConfiguration.swift"
 check_file "KeyboardExtension/Info.plist"
-check_file "KeyboardExtension/KeyboardExtension.entitlements"
 echo
 
 echo "Checking Swift code for common issues..."
@@ -108,27 +105,15 @@ else
     ((warnings++))
 fi
 
-# Check for App Group setup
-if grep -q "group.com.ahwfr.keyboard" "$KEYBOARD_DIR/KeyboardExtension/KeyboardAppConfiguration.swift"; then
-    echo -e "${GREEN}✓${NC} App Group ID configured"
-else
-    echo -e "${RED}✗${NC} App Group ID not found in configuration"
+# App Groups are intentionally NOT used: the entitlement requires a paid
+# Apple Developer account to provision, which blocks free-account sideloading
+# (AltStore/Sideloadly/ksign) from registering the extension at all. Nothing
+# shares data between the host app and extension, so it isn't needed.
+if grep -rq "application-groups" "$KEYBOARD_DIR" 2>/dev/null; then
+    echo -e "${RED}✗${NC} App Group entitlement found (blocks free-account sideloading)"
     ((errors++))
-fi
-
-# Check entitlements
-if grep -q "com.apple.security.application-groups" "$KEYBOARD_DIR/KeyboardExtension/KeyboardExtension.entitlements"; then
-    echo -e "${GREEN}✓${NC} Extension entitlements include App Group"
 else
-    echo -e "${RED}✗${NC} Extension entitlements missing App Group"
-    ((errors++))
-fi
-
-if grep -q "com.apple.security.application-groups" "$KEYBOARD_DIR/Host/KeyboardHost.entitlements"; then
-    echo -e "${GREEN}✓${NC} Host entitlements include App Group"
-else
-    echo -e "${RED}✗${NC} Host entitlements missing App Group"
-    ((errors++))
+    echo -e "${GREEN}✓${NC} No App Group entitlement (works with free-account sideloading)"
 fi
 
 # Check Info.plist for RequestsOpenAccess

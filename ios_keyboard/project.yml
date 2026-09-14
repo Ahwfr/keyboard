@@ -19,7 +19,6 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.ahwfr.keyboard
         INFOPLIST_FILE: Host/Info.plist
-        CODE_SIGN_ENTITLEMENTS: Host/KeyboardHost.entitlements
         TARGETED_DEVICE_FAMILY: "1"
         LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks"
     dependencies:
@@ -34,7 +33,6 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.ahwfr.keyboard.extension
         INFOPLIST_FILE: KeyboardExtension/Info.plist
-        CODE_SIGN_ENTITLEMENTS: KeyboardExtension/KeyboardExtension.entitlements
         TARGETED_DEVICE_FAMILY: "1"
         APPLICATION_EXTENSION_API_ONLY: YES
         LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../../Frameworks"
