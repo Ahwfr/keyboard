@@ -471,7 +471,9 @@ private final class AccentPopover: UIStackView {
         }
     }
 
-    required init?(coder: NSCoder) { nil }
+    required init(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     func present() {
         alpha = 0
