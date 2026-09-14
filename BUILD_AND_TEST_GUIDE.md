@@ -2,7 +2,7 @@
 
 ## Project Summary
 
-This is a **native Swift/UIKit keyboard extension** for iOS using **KeyboardKit** (free open-source core). It replaces the previous Flutter-based implementation which crashed due to iOS memory limitations (~48–60MB for keyboard extensions).
+This is a **native Swift/UIKit keyboard extension** for iOS with zero third-party dependencies. It replaces the previous Flutter-based implementation which crashed due to iOS memory limitations (~48–60MB for keyboard extensions). KeyboardKit was evaluated but dropped: every recent release's `Package.swift` has a trailing-comma syntax error that fails to resolve on the CI runner's Xcode/Swift toolchain.
 
 ### Key Features
 - ✅ QWERTY keyboard with persistent number row (1–0)
@@ -315,11 +315,8 @@ Results:
 
 **Solutions:**
 1. Check memory with Instruments (see Part 3)
-2. Verify KeyboardKit package is linked correctly:
-   - Host target should have KeyboardKit in "Link Binary with Libraries"
-   - Check Build Phases > Link Binary With Libraries
-3. Check App Group entitlements (see Part 1, Step 4)
-4. Check `KeyboardAppConfiguration.appGroupID` matches entitlements files
+2. Check App Group entitlements (see Part 1, Step 4)
+3. Check `KeyboardAppConfiguration.appGroupID` matches entitlements files
 
 ### Clipboard not working (Full Access is ON)
 
@@ -472,6 +469,6 @@ For issues or questions:
 ---
 
 **Last Updated:** September 2026  
-**KeyboardKit Version:** 10.7.3 (free open-source core)  
+**Dependencies:** None (pure UIKit, no Swift packages)  
 **Minimum iOS:** 16.0  
 **Memory Ceiling:** <48–60MB (iOS limit for keyboard extensions)

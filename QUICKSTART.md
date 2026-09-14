@@ -1,6 +1,6 @@
 # iOS Keyboard Extension: Quick Start Guide
 
-> **Note:** This is a native Swift keyboard extension built with KeyboardKit. The previous Flutter-based implementation was replaced due to iOS memory constraints (keyboard extensions have a ~48–60MB limit; Flutter alone consumes 50–100MB+).
+> **Note:** This is a native Swift keyboard extension built with plain UIKit. The previous Flutter-based implementation was replaced due to iOS memory constraints (keyboard extensions have a ~48–60MB limit; Flutter alone consumes 50–100MB+). KeyboardKit was tried and dropped: its `Package.swift` has a trailing-comma syntax error in every recent release that fails to resolve on CI.
 
 ## Installation & First Build (5 min on macOS)
 
@@ -145,7 +145,6 @@ keyboard/                           # Main project
 
 ### No Flutter in Extension
 - Extension is 100% native Swift/UIKit
-- Uses **KeyboardKit** free core (no paid license)
 - Container app can still be Flutter (only extension is native)
 
 ### Full Access Privacy
@@ -203,5 +202,4 @@ xcodebuild clean -project ios_keyboard/Keyboard.xcodeproj
 ---
 
 **Last Updated:** September 2026  
-**KeyboardKit:** 10.7.3 (free core)  
 **Status:** Production-ready for testing

@@ -192,7 +192,7 @@
 - All required files present (18 checks)
 - Directory structure correct
 - No Flutter references in extension
-- KeyboardKit imported
+- No KeyboardKit dependency (its Package.swift fails to resolve on CI)
 - UIInputViewAudioFeedback protocol
 - App Group configuration
 - Entitlements on both targets

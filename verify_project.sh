@@ -74,27 +74,29 @@ echo
 echo "Checking Swift code for common issues..."
 echo
 
-# Check for Flutter references in extension (should be NONE)
-if grep -r "Flutter" "$KEYBOARD_DIR/KeyboardExtension" 2>/dev/null | grep -v "Binary file"; then
+# Check for actual Flutter usage in extension (should be NONE); explanatory
+# comments that merely mention Flutter by name don't count as a violation.
+if grep -rE "^\s*import Flutter\b" "$KEYBOARD_DIR/KeyboardExtension" 2>/dev/null; then
     echo -e "${RED}✗${NC} KeyboardExtension contains Flutter references (should be 100% native Swift)"
     ((errors++))
 else
     echo -e "${GREEN}✓${NC} No Flutter references in extension"
 fi
 
-# Check for KeyboardKit import
+# KeyboardKit is intentionally NOT used: every recent release's Package.swift
+# has a trailing-comma syntax error that fails to resolve on CI's Xcode.
 if grep -q "import KeyboardKit" "$KEYBOARD_DIR/KeyboardExtension/KeyboardViewController.swift"; then
-    echo -e "${GREEN}✓${NC} KeyboardKit imported in KeyboardViewController"
-else
-    echo -e "${RED}✗${NC} KeyboardKit not imported"
+    echo -e "${RED}✗${NC} KeyboardKit is imported but its Package.swift fails to resolve on CI"
     ((errors++))
+else
+    echo -e "${GREEN}✓${NC} No KeyboardKit dependency (avoids upstream Package.swift bug)"
 fi
 
-# Check for KeyboardInputViewController subclass
-if grep -q "class KeyboardViewController: KeyboardInputViewController" "$KEYBOARD_DIR/KeyboardExtension/KeyboardViewController.swift"; then
-    echo -e "${GREEN}✓${NC} KeyboardViewController extends KeyboardInputViewController"
+# Check for UIInputViewController subclass
+if grep -q "class KeyboardViewController: UIInputViewController" "$KEYBOARD_DIR/KeyboardExtension/KeyboardViewController.swift"; then
+    echo -e "${GREEN}✓${NC} KeyboardViewController extends UIInputViewController"
 else
-    echo -e "${RED}✗${NC} KeyboardViewController should extend KeyboardInputViewController"
+    echo -e "${RED}✗${NC} KeyboardViewController should extend UIInputViewController"
     ((errors++))
 fi
 
@@ -148,7 +150,7 @@ if [ $errors -eq 0 ]; then
     echo "Next steps:"
     echo "1. On macOS: brew install xcodegen"
     echo "2. cd ios_keyboard && xcodegen generate"
-    echo "3. open keyboard.xcodeproj"
+    echo "3. open Keyboard.xcodeproj"
     echo "4. Set DEVELOPMENT_TEAM in build settings"
     echo "5. Select physical device"
     echo "6. Product > Build (Cmd+B)"

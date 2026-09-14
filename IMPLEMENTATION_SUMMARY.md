@@ -13,13 +13,18 @@ This is a **complete rewrite** of the iOS keyboard extension from Flutter to **n
 - Worked in simulator (no memory limit enforced)
 - No workaround: Flutter is fundamentally incompatible with iOS keyboard extensions
 
-### After (Native Swift/UIKit with KeyboardKit) ✅
+### After (Native Swift/UIKit, zero dependencies) ✅
 - 100% native Swift implementation
-- Uses **KeyboardKit** (free open-source core) for base classes and utilities
+- Subclasses plain `UIInputViewController`; no third-party Swift packages
 - Custom UI built with UIKit (UIStackView, UIControl subclasses)
 - **Peak memory: 35–45MB** during normal use (comfortably under 48MB ceiling)
 - Works reliably on physical devices
 - No Flutter engine in the extension target at all
+
+> KeyboardKit was evaluated first but dropped: every recent release's
+> `Package.swift` has a trailing-comma syntax error that fails to resolve on
+> the CI runner's Xcode/Swift toolchain (`error: unexpected ',' separator`).
+> This is an upstream bug, present in 10.7.3 through 10.9.4 alike.
 
 ---
 
@@ -58,14 +63,10 @@ ios_keyboard/
    - Orientation handling (portrait/landscape reflow)
    - AudioFeedback for key presses (requires UIInputViewAudioFeedback)
 
-3. **KeyboardKit Integration**
-   - Subclass `KeyboardInputViewController` instead of raw `UIInputViewController`
-   - Use KeyboardKit's free core for:
-     - Base controller setup
-     - AppGroup integration
-     - Utility methods
-   - NO Pro features used (no license key)
-   - NO autocomplete, AI, or full localization
+3. **No Third-Party Dependencies**
+   - Subclass `UIInputViewController` directly (standard UIKit)
+   - No Swift Package Manager dependencies to resolve at build time
+   - Removes any risk of an upstream package breaking the CI build
 
 4. **Privacy by Default**
    - Keyboard input stays local to the extension
@@ -260,7 +261,6 @@ private let accentVariants: [String: [String]] = [
 
 ✅ **Lightweight implementation:**
 - UIKit (system framework, already loaded)
-- KeyboardKit core (binary framework, ~2MB)
 - Pure Swift code (minimal runtime overhead)
 - UserDefaults for clipboard history (OS-optimized)
 - Timer-based repeats (not gesture spam)
@@ -270,11 +270,10 @@ private let accentVariants: [String: [String]] = [
 | Component | Estimate |
 |-----------|----------|
 | Swift runtime + UIKit baseline | 8–12 MB |
-| KeyboardKit framework | 2–3 MB |
 | Keyboard UI (keys, stack views) | 1–2 MB |
 | Clipboard history (10 items, 1000 chars each) | <1 MB |
 | Current text context from system | 1–2 MB |
-| **Total baseline** | **13–20 MB** |
+| **Total baseline** | **11–17 MB** |
 | **Peak during use** | **35–45 MB** |
 | **iOS Ceiling** | **~48–60 MB** ⚠️ |
 
@@ -412,23 +411,18 @@ private let accentVariants: [String: [String]] = [
 - ✅ Support more languages/accents (just add to `accentVariants` dict)
 - ✅ Swap number row for symbol row (tap a toggle key)
 - ✅ Theme support (light/dark already supported via `UIColor { traits in ... }`)
-- ✅ Haptic feedback (KeyboardKit's Feedback module)
+- ✅ Haptic feedback (`UIImpactFeedbackGenerator`, used directly)
 - ✅ One-handed mode (narrow keyboard on left/right)
 
 ### Not Possible (memory reasons)
 - ❌ Autocomplete engine (too heavy)
 - ❌ AI/ML features
-- ❌ Full localization sets (KeyboardKit Pro feature)
+- ❌ Full localization sets (would need a dictionary per locale)
 - ❌ Sticker picker or media features
 
 ---
 
 ## References
-
-### KeyboardKit
-- Docs: https://docs.keyboardkit.com/
-- GitHub: https://github.com/KeyboardKit/KeyboardKit
-- Free vs Pro: https://keyboardkit.com/
 
 ### iOS Keyboard Extensions
 - Apple docs: https://developer.apple.com/documentation/uikit/keyboards_and_input/creating_custom_keyboard_apps

@@ -1,6 +1,6 @@
 # iOS Keyboard Extension - Complete Native Implementation
 
-This is a **production-ready native Swift keyboard extension** built with KeyboardKit. It replaces the previous Flutter-based implementation which crashed on iOS devices due to memory constraints.
+This is a **production-ready native Swift keyboard extension** built with plain UIKit (`UIInputViewController`). It replaces the previous Flutter-based implementation which crashed on iOS devices due to memory constraints. KeyboardKit was evaluated but dropped: every recent release's `Package.swift` has a trailing-comma syntax error that fails to resolve on the CI runner's Xcode/Swift toolchain.
 
 ## 📚 Documentation
 
@@ -76,7 +76,7 @@ The previous Flutter-based approach crashed because:
 
 This native implementation:
 - Uses **35–45MB** peak (comfortably under limit)
-- 100% native UIKit + KeyboardKit
+- 100% native UIKit, zero third-party dependencies
 - No Flutter engine in the extension
 - Stable and production-ready
 
@@ -112,7 +112,7 @@ Outputs:
 - ✓ All files present and correctly configured
 - ✓ No Flutter references in extension
 - ✓ App Group entitlements set
-- ✓ KeyboardKit imported
+- ✓ No KeyboardKit dependency (avoids its Package.swift bug)
 
 Should print `✓ All checks passed!` before proceeding.
 
@@ -146,10 +146,9 @@ See **[BUILD_AND_TEST_GUIDE.md](BUILD_AND_TEST_GUIDE.md) Part 4** for full troub
 
 ## 🔗 Dependencies
 
-- **KeyboardKit 10.7.3** (free open-source core only)
-  - No paid license required
-  - No Pro features used
-  - Binary framework (~2MB)
+- None. The extension is pure UIKit with no third-party Swift packages, so
+  there's nothing to resolve at build time and no risk of an upstream package
+  breaking the build.
 
 ## 📖 Detailed Guides
 
@@ -217,7 +216,7 @@ private let accentVariants: [String: [String]] = [
 
 ## 📝 License
 
-Keyboard extension code is original. Uses KeyboardKit (free open-source core) under its license.
+Keyboard extension code is original and has no third-party dependencies.
 
 ## 📅 Status
 

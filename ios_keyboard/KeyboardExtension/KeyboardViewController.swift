@@ -1,9 +1,8 @@
-import KeyboardKit
 import UIKit
 
 /// Native keyboard extension. There is deliberately no Flutter engine or
 /// FlutterViewController in this target: extensions have a small memory budget.
-final class KeyboardViewController: KeyboardInputViewController, UIInputViewAudioFeedback {
+final class KeyboardViewController: UIInputViewController, UIInputViewAudioFeedback {
 
     private enum ShiftState { case lower, shift, capsLock }
 
@@ -32,26 +31,12 @@ final class KeyboardViewController: KeyboardInputViewController, UIInputViewAudi
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // This only configures KeyboardKit's free core and app-group sync. No
-        // license key is supplied and no Pro-only services are enabled.
-        setup(for: KeyboardAppConfiguration.app) { result in
-            if case .failure(let error) = result {
-                NSLog("KeyboardKit setup failed: %@", String(describing: error))
-            }
-        }
         view.backgroundColor = UIColor { traits in
             traits.userInterfaceStyle == .dark ? .systemGray6 : .systemGray5
         }
         buildKeyboard()
         refreshClipboardIfNeeded()
         updateShiftAppearance()
-    }
-
-    override func viewWillSetupKeyboardView() {
-        // Intentionally empty and does not call super: this extension renders
-        // its own UIKit layout instead of KeyboardKit's default SwiftUI
-        // KeyboardView, so the default (which clears `view`'s subviews) must
-        // never run.
     }
 
     override func viewWillAppear(_ animated: Bool) {
