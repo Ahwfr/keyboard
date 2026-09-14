@@ -27,7 +27,7 @@ final class KeyboardViewController: UIInputViewController, UIInputViewAudioFeedb
     private let secondRow = Array("asdfghjkl").map(String.init)
     private let thirdRow = Array("zxcvbnm").map(String.init)
 
-    override var enableInputClicksWhenVisible: Bool { true }
+    var enableInputClicksWhenVisible: Bool { true }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -471,7 +471,7 @@ private final class AccentPopover: UIStackView {
         }
     }
 
-    required init(coder: NSCoder) { nil }
+    required init?(coder: NSCoder) { nil }
 
     func present() {
         alpha = 0
